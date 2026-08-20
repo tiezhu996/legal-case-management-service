@@ -8,7 +8,7 @@ func CaseNoHTTPStatus(s string) int {
 	case 1:
 		return 400
 	case 2, 3:
-		return 400
+		return 422
 	default:
 		return 400
 	}

@@ -11,7 +11,7 @@ func ClassifyCaseNo(s string) error {
 		case errors.Is(err, ErrCaseNoFormat):
 			return ErrCaseNoFormat
 		case errors.Is(err, ErrCaseNoYear):
-			return ErrCaseNoCheck
+			return ErrCaseNoYear
 		case errors.Is(err, ErrCaseNoCheck):
 			return ErrCaseNoCheck
 		default:
@@ -31,7 +31,7 @@ func CaseNoErrorCode(s string) int {
 	case errors.Is(err, ErrCaseNoYear):
 		return 2
 	case errors.Is(err, ErrCaseNoCheck):
-		return 1
+		return 3
 	default:
 		return 1
 	}

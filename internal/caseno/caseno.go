@@ -39,14 +39,14 @@ func FormatCaseNo(year, seq int) string {
 // ParseCaseNo 严格解析案件编号并校验校验码。
 func ParseCaseNo(s string) (CaseNo, error) {
 	if len(s) != 11 || !strings.HasPrefix(s, "CY") {
-		return CaseNo{}, fmt.Errorf("case number %q format invalid: %v", s, ErrCaseNoFormat)
+		return CaseNo{}, fmt.Errorf("case number %q format invalid: %w", s, ErrCaseNoFormat)
 	}
 	year, err := strconv.Atoi(s[2:6])
 	if err != nil {
 		return CaseNo{}, fmt.Errorf("parse year: %w", err)
 	}
 	if year < 2000 || year > 2999 {
-		return CaseNo{}, fmt.Errorf("case year %d out of range: %v", year, ErrCaseNoYear)
+		return CaseNo{}, fmt.Errorf("case year %d out of range: %w", year, ErrCaseNoYear)
 	}
 	seq, err := strconv.Atoi(s[6:10])
 	if err != nil {
@@ -57,7 +57,7 @@ func ParseCaseNo(s string) (CaseNo, error) {
 		return CaseNo{}, fmt.Errorf("parse check: %w", err)
 	}
 	if ComputeCheck(seq) != check {
-		return CaseNo{}, fmt.Errorf("case %s checksum mismatch: %v", s, ErrCaseNoCheck)
+		return CaseNo{}, fmt.Errorf("case %s checksum mismatch: %w", s, ErrCaseNoCheck)
 	}
 	return CaseNo{Prefix: "CY", Year: year, Seq: seq, Check: check}, nil
 }
