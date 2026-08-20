@@ -36,8 +36,9 @@ func TestTimelineCut(t *testing.T) {
 		{At: b, Kind: "status", Label: "filed"},
 		{At: b.Add(time.Hour), Kind: "status", Label: "investigating"},
 	}
-	_ = SubEvents(events, 0, 1)
-	if len(events) != 2 || events[0].Label != "filed" {
+	sub := SubEvents(events, 0, 1)
+	sub[0].Label = "mutated"
+	if events[0].Label != "filed" {
 		t.Fatalf("SubEvents aliased original: %+v", events)
 	}
 }
@@ -47,9 +48,10 @@ func TestTimelineDedup(t *testing.T) {
 	events := []Event{
 		{At: b, Kind: "status", Label: "filed"},
 		{At: b, Kind: "status", Label: "filed"},
+		{At: b.Add(time.Hour), Kind: "doc", Label: "a.pdf"},
 	}
 	_ = DedupEvents(events)
-	if len(events) != 2 || events[0].Label != "filed" {
+	if events[1].Label != "filed" || events[2].Label != "a.pdf" {
 		t.Fatalf("DedupEvents corrupted original: %+v", events)
 	}
 }

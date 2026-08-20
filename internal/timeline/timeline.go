@@ -39,14 +39,12 @@ func BuildTimeline(changes []StatusChange, docs []DocEvent) []Event {
 
 // MergeTimelines 合并两条已排序时间线并保持全局有序。
 func MergeTimelines(a, b []Event) []Event {
-	out := make([]Event, 0, len(a)+len(b))
-	out = append(out, a...)
-	out = append(out, b...)
+	out := append(a, b...)
 	sort.SliceStable(out, func(i, j int) bool { return out[i].At.Before(out[j].At) })
 	return out
 }
 
-// SubEvents 返回时间线 [from, to) 区间的副本。
+// SubEvents 返回时间线 [from, to) 区间。
 func SubEvents(events []Event, from, to int) []Event {
 	if from < 0 {
 		from = 0
@@ -57,14 +55,12 @@ func SubEvents(events []Event, from, to int) []Event {
 	if from > to {
 		from = to
 	}
-	out := make([]Event, to-from)
-	copy(out, events[from:to])
-	return out
+	return events[from:to]
 }
 
-// DedupEvents 去除相邻重复条目，返回全新切片。
+// DedupEvents 去除相邻重复条目。
 func DedupEvents(events []Event) []Event {
-	out := make([]Event, 0, len(events))
+	out := events[:0]
 	for _, e := range events {
 		if len(out) > 0 && out[len(out)-1] == e {
 			continue
