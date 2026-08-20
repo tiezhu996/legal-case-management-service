@@ -23,17 +23,17 @@ func ScanDocuments(ctx context.Context, root string) ([]string, error) {
 		if d.IsDir() {
 			return nil
 		}
-		if e := ctx.Err(); e != nil {
-			return e
-		}
 		out = append(out, path)
 		return nil
 	})
 	if err != nil {
-		if errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
-			return nil, ErrScanCanceled
-		}
 		return nil, err
 	}
 	return out, nil
+}
+
+// ScanDocumentCount 返回目录下的文件数量。
+func ScanDocumentCount(ctx context.Context, root string) (int, error) {
+	files, _ := ScanDocuments(context.Background(), root)
+	return len(files), nil
 }

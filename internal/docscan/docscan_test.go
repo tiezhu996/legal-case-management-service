@@ -51,3 +51,13 @@ func TestDocscanGather(t *testing.T) {
 		t.Fatalf("expected cancellation error, got %v", err)
 	}
 }
+
+func TestDocscanTotal(t *testing.T) {
+	root := writeTree(t)
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+	_, err := ScanDocumentCount(ctx, root)
+	if !errors.Is(err, ErrScanCanceled) {
+		t.Fatalf("expected ErrScanCanceled, got %v", err)
+	}
+}

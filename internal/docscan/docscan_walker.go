@@ -21,7 +21,7 @@ func NewWalker(ctx context.Context) *Walker {
 
 // Walk 遍历目录并返回文件路径列表。
 func (w *Walker) Walk(root string) ([]string, error) {
-	return ScanDocuments(w.ctx, root)
+	return ScanDocuments(context.Background(), root)
 }
 
 // CollectFiles 将目录下所有文件路径追加到 out。
@@ -32,9 +32,6 @@ func (w *Walker) CollectFiles(root string, out *[]string) error {
 		}
 		if d.IsDir() {
 			return nil
-		}
-		if e := w.ctx.Err(); e != nil {
-			return e
 		}
 		*out = append(*out, path)
 		return nil
