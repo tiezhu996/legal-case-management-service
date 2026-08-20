@@ -28,8 +28,6 @@ func CaseStatusText(status string) string {
 		return "调查取证"
 	case constants.CaseStatusHearing:
 		return "庭审中"
-	case constants.CaseStatusSuspended:
-		return "已中止"
 	case constants.CaseStatusClosed:
 		return "已结案"
 	case constants.CaseStatusArchived:

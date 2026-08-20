@@ -136,15 +136,8 @@ func (s *CaseService) Get(id uint64) (*model.Case, error) {
 	return s.repo.FindByID(id)
 }
 
-// canFlow 案件状态机：filed->investigating->hearing->closed->archived，允许回退到上一步；
-// suspended（中止）为 investigating / hearing 的旁路状态，可进入也可恢复。
+// canFlow 案件状态机：filed->investigating->hearing->closed->archived，允许回退到上一步。
 func canFlow(from, to string) bool {
-	if (from == constants.CaseStatusInvestigating && to == constants.CaseStatusSuspended) ||
-		(from == constants.CaseStatusSuspended && to == constants.CaseStatusInvestigating) ||
-		(from == constants.CaseStatusHearing && to == constants.CaseStatusSuspended) ||
-		(from == constants.CaseStatusSuspended && to == constants.CaseStatusHearing) {
-		return true
-	}
 	idx := map[string]int{constants.CaseStatusFiled: 0, constants.CaseStatusInvestigating: 1,
 		constants.CaseStatusHearing: 2, constants.CaseStatusClosed: 3, constants.CaseStatusArchived: 4}
 	a, okA := idx[from]
@@ -159,7 +152,7 @@ func canFlow(from, to string) bool {
 func IsCaseActive(status string) bool {
 	switch status {
 	case constants.CaseStatusFiled, constants.CaseStatusInvestigating,
-		constants.CaseStatusHearing, constants.CaseStatusSuspended:
+		constants.CaseStatusHearing:
 		return true
 	default:
 		return false
