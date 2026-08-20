@@ -137,7 +137,15 @@ func (s *CaseService) Get(id uint64) (*model.Case, error) {
 }
 
 // canFlow 案件状态机：filed->investigating->hearing->closed->archived，允许回退到上一步。
+// suspended（中止）为旁路状态：可在 investigating/hearing 之间双向流转，其余状态不可直达。
 func canFlow(from, to string) bool {
+	if from == constants.CaseStatusSuspended || to == constants.CaseStatusSuspended {
+		active := map[string]bool{
+			constants.CaseStatusInvestigating: true,
+			constants.CaseStatusHearing:       true,
+		}
+		return active[from] || active[to]
+	}
 	idx := map[string]int{constants.CaseStatusFiled: 0, constants.CaseStatusInvestigating: 1,
 		constants.CaseStatusHearing: 2, constants.CaseStatusClosed: 3, constants.CaseStatusArchived: 4}
 	a, okA := idx[from]
@@ -152,7 +160,7 @@ func canFlow(from, to string) bool {
 func IsCaseActive(status string) bool {
 	switch status {
 	case constants.CaseStatusFiled, constants.CaseStatusInvestigating,
-		constants.CaseStatusHearing:
+		constants.CaseStatusHearing, constants.CaseStatusSuspended:
 		return true
 	default:
 		return false

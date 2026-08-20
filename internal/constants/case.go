@@ -11,7 +11,7 @@ const (
 )
 
 // CaseStatusValues 全部案件状态值。
-var CaseStatusValues = []string{CaseStatusFiled, CaseStatusInvestigating, CaseStatusHearing, CaseStatusClosed, CaseStatusArchived}
+var CaseStatusValues = []string{CaseStatusFiled, CaseStatusInvestigating, CaseStatusHearing, CaseStatusSuspended, CaseStatusClosed, CaseStatusArchived}
 
 // CaseType 案件类型枚举。
 const (
