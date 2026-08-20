@@ -50,3 +50,18 @@ func TestCasenoCode(t *testing.T) {
 		t.Fatal("format error should have code 1")
 	}
 }
+
+func TestCasenoHTTP(t *testing.T) {
+	if CaseNoHTTPStatus("CY202600014") != 200 {
+		t.Fatal("valid case no should map to 200")
+	}
+	if CaseNoHTTPStatus("bad") != 400 {
+		t.Fatal("format error should map to 400")
+	}
+	if CaseNoHTTPStatus("CY199900014") != 422 {
+		t.Fatal("year error should map to 422")
+	}
+	if CaseNoHTTPStatus("CY202600019") != 422 {
+		t.Fatal("checksum error should map to 422")
+	}
+}
