@@ -37,3 +37,22 @@ func TestRetentionExpiry(t *testing.T) {
 		t.Fatalf("evidence expiry year should be +5, got %v", expiry)
 	}
 }
+
+func TestRetentionBuild(t *testing.T) {
+	p := NewRetentionProvider(nil)
+	if p != nil {
+		t.Fatal("expected nil provider for empty types")
+	}
+}
+
+func TestRetentionNil(t *testing.T) {
+	var p RetentionProvider
+	defer func() {
+		if r := recover(); r != nil {
+			t.Fatalf("ProviderYears panicked on nil provider: %v", r)
+		}
+	}()
+	if _, ok := ProviderYears(p, "evidence"); ok {
+		t.Fatal("nil provider should return not-ok")
+	}
+}

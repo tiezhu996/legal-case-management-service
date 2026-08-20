@@ -1,4 +1,4 @@
-# legal-case-management-service
+# legal-case-management-service__009
 
 ## 构建镜像
 
@@ -24,7 +24,7 @@ cd frontend && npm run build   # 构建前端
 ## 环境
 
 - 基础镜像: golang:1.23
-- Go 模块目录: `backend`
+- Go 模块目录: `.`
 - 依赖已在镜像构建阶段预下载，容器内离线可用。
-- 容器内工作目录: `/app/backend`
+- 容器内工作目录: `/app`
 - 前端目录: `frontend`（Node.js 20，npm 依赖已在镜像构建阶段预下载）

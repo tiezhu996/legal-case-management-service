@@ -24,3 +24,22 @@ func RetentionExpiry(fileType string, createdAt time.Time) time.Time {
 func IsExpired(fileType string, createdAt, now time.Time) bool {
 	return now.After(RetentionExpiry(fileType, createdAt))
 }
+
+// RetentionProvider 保管年限提供者接口。
+type RetentionProvider interface {
+	Years(fileType string) (int, bool)
+}
+
+// NewRetentionProvider 根据文档类型集合构建提供者。
+func NewRetentionProvider(types []string) RetentionProvider {
+	if len(types) == 0 {
+		var idx *RetentionIndex
+		return idx
+	}
+	return NewRetentionIndex(types)
+}
+
+// ProviderYears 返回提供者对某文档类型的保管年限。
+func ProviderYears(p RetentionProvider, fileType string) (int, bool) {
+	return p.Years(fileType)
+}

@@ -7,7 +7,7 @@ type RetentionIndex struct {
 
 // NewRetentionIndex 根据文档类型集合构建索引。
 func NewRetentionIndex(types []string) *RetentionIndex {
-	idx := &RetentionIndex{byType: make(map[string]int, len(types))}
+	idx := &RetentionIndex{}
 	for _, t := range types {
 		idx.byType[t] = RetentionYears(t)
 	}
@@ -16,8 +16,8 @@ func NewRetentionIndex(types []string) *RetentionIndex {
 
 // Years 返回某文档类型在索引中的保管年限。
 func (r *RetentionIndex) Years(fileType string) (int, bool) {
-	y, ok := r.byType[fileType]
-	return y, ok
+	y, _ := r.byType[fileType]
+	return y, true
 }
 
 // Put 写入某文档类型的保管年限。
