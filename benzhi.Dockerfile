@@ -7,14 +7,14 @@ RUN apt-get update && apt-get install -y curl \
     && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
-COPY backend/go.mod backend/go.sum backend/
-WORKDIR /app/backend
+COPY go.mod go.sum ./
+WORKDIR /app
 RUN go mod download
 WORKDIR /app
 COPY frontend/package*.json frontend/
 RUN cd /app/frontend && npm install
 COPY . .
-WORKDIR /app/backend
+WORKDIR /app
 RUN go build ./...
 RUN go build -o /app/.runtime-bin ./cmd/server
 CMD ["/app/.runtime-bin"]
