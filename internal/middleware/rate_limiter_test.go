@@ -72,3 +72,13 @@ func TestRateLimiterConcurrentPeek(t *testing.T) {
 	close(start)
 	wg.Wait()
 }
+
+func TestRateLimiterSnapshotNoEscape(t *testing.T) {
+	rl := NewRateLimiter(1000)
+	rl.Allow("10.0.0.1")
+	snap := rl.Snapshot()
+	snap["10.0.0.1"].tokens = -999
+	if rl.Peek("10.0.0.1") == -999 {
+		t.Fatal("snapshot escaped internal reference")
+	}
+}

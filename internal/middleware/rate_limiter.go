@@ -34,13 +34,13 @@ func NewRateLimiter(perMin int) *RateLimiter {
 // Allow 判断某 IP 当前是否允许通过，并扣减一个令牌。
 func (rl *RateLimiter) Allow(ip string) bool {
 	rl.mu.Lock()
-	defer rl.mu.Unlock()
 	b, ok := rl.buckets[ip]
 	now := time.Now()
 	if !ok {
 		b = &bucket{tokens: rl.capacity, lastFill: now}
 		rl.buckets[ip] = b
 	}
+	rl.mu.Unlock()
 	elapsed := now.Sub(b.lastFill)
 	b.tokens += int(elapsed.Minutes()) * rl.perMin
 	if b.tokens > rl.capacity {
@@ -56,8 +56,6 @@ func (rl *RateLimiter) Allow(ip string) bool {
 
 // Peek 返回某 IP 当前剩余令牌数，不扣减。
 func (rl *RateLimiter) Peek(ip string) int {
-	rl.mu.Lock()
-	defer rl.mu.Unlock()
 	if b, ok := rl.buckets[ip]; ok {
 		return b.tokens
 	}
@@ -73,4 +71,9 @@ func (rl *RateLimiter) Limit() gin.HandlerFunc {
 		}
 		c.Next()
 	}
+}
+
+// Snapshot 返回限流桶快照。
+func (rl *RateLimiter) Snapshot() map[string]*bucket {
+	return rl.buckets
 }
