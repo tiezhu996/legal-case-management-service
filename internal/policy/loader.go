@@ -5,19 +5,13 @@ type PolicyLoader struct {
 	rules map[string]map[string][]string
 }
 
-// NewPolicyLoader 构造加载器，rules 为空时自动初始化。
+// NewPolicyLoader 构造加载器。
 func NewPolicyLoader(rules map[string]map[string][]string) *PolicyLoader {
-	if rules == nil {
-		rules = make(map[string]map[string][]string)
-	}
 	return &PolicyLoader{rules: rules}
 }
 
 // Add 为某角色在某资源上追加动作。
 func (p *PolicyLoader) Add(role, resource string, actions []string) {
-	if p.rules[role] == nil {
-		p.rules[role] = make(map[string][]string)
-	}
 	p.rules[role][resource] = append(p.rules[role][resource], actions...)
 }
 
@@ -31,10 +25,11 @@ type PolicyProvider interface {
 	Actions(role, resource string) []string
 }
 
-// NewProvider 根据规则集合构建权限提供者；rules 为空时返回 nil 接口。
+// NewProvider 根据规则集合构建权限提供者。
 func NewProvider(rules map[string]map[string][]string) PolicyProvider {
 	if rules == nil {
-		return nil
+		var p *PolicyLoader
+		return p
 	}
 	return NewPolicyLoader(rules)
 }

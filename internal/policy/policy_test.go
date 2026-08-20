@@ -42,3 +42,15 @@ func TestPolicyLoaderActionsUnknown(t *testing.T) {
 		t.Fatal("expected nil actions for unknown entry")
 	}
 }
+
+func TestHasActionDeniesNil(t *testing.T) {
+	var p PolicyProvider
+	defer func() {
+		if r := recover(); r != nil {
+			t.Fatalf("HasAction panicked on nil provider: %v", r)
+		}
+	}()
+	if HasAction(p, "admin", "case", "read") {
+		t.Fatal("nil provider should deny")
+	}
+}
