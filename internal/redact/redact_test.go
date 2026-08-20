@@ -39,3 +39,12 @@ func TestRedactBoth(t *testing.T) {
 		t.Fatalf("RedactAll corrupted originals: %+v %+v", ids, phones)
 	}
 }
+
+func TestRedactCompact(t *testing.T) {
+	items := []string{"a", "", "b"}
+	orig := append([]string(nil), items...)
+	_ = FilterNonEmpty(items)
+	if len(items) != 3 || items[0] != orig[0] || items[1] != orig[1] || items[2] != orig[2] {
+		t.Fatalf("FilterNonEmpty corrupted original: %+v", items)
+	}
+}

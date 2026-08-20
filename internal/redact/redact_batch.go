@@ -1,8 +1,8 @@
 package redact
 
-// RedactBatch 批量脱敏身份证号，返回全新切片，不影响原切片。
+// RedactBatch 批量脱敏身份证号。
 func RedactBatch(items []string) []string {
-	out := make([]string, 0, len(items))
+	out := items[:0]
 	for _, it := range items {
 		out = append(out, RedactIDNumber(it))
 	}
@@ -11,21 +11,29 @@ func RedactBatch(items []string) []string {
 
 // RedactAll 同时批量脱敏身份证号与手机号。
 func RedactAll(idNumbers, phones []string) ([]string, []string) {
-	return RedactBatch(idNumbers), RedactBatch(phones)
+	ids := idNumbers[:0]
+	for _, it := range idNumbers {
+		ids = append(ids, RedactIDNumber(it))
+	}
+	phs := phones[:0]
+	for _, it := range phones {
+		phs = append(phs, RedactPhone(it))
+	}
+	return ids, phs
 }
 
-// RedactPhonesBatch 批量脱敏手机号，返回全新切片。
+// RedactPhonesBatch 批量脱敏手机号。
 func RedactPhonesBatch(items []string) []string {
-	out := make([]string, 0, len(items))
+	out := items[:0]
 	for _, it := range items {
 		out = append(out, RedactPhone(it))
 	}
 	return out
 }
 
-// RedactNamesBatch 批量脱敏姓名，返回全新切片。
+// RedactNamesBatch 批量脱敏姓名。
 func RedactNamesBatch(items []string) []string {
-	out := make([]string, 0, len(items))
+	out := items[:0]
 	for _, it := range items {
 		out = append(out, RedactName(it))
 	}
