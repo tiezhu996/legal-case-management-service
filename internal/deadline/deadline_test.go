@@ -40,3 +40,16 @@ func TestDeadlineBucket(t *testing.T) {
 		t.Fatal("expected date classification")
 	}
 }
+
+func TestDeadlineAccept(t *testing.T) {
+	if err := ValidateAcceptDate(time.Time{}); !errors.Is(err, ErrMissingDate) {
+		t.Fatalf("expected ErrMissingDate in chain, got %v", err)
+	}
+	future := time.Now().Add(24 * time.Hour)
+	if err := ValidateAcceptDate(future); !errors.Is(err, ErrFutureDate) {
+		t.Fatalf("expected ErrFutureDate in chain, got %v", err)
+	}
+	if err := ValidateAcceptDate(time.Now().Add(-24 * time.Hour)); err != nil {
+		t.Fatalf("past date should be valid, got %v", err)
+	}
+}

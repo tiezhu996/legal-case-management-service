@@ -1,6 +1,9 @@
 package deadline
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 // trialMonths 案件类型 -> 审理期限（月）。
 var trialMonths = map[string]int{
@@ -32,4 +35,16 @@ func TrialDeadline(caseType string, acceptDate time.Time) time.Time {
 // AppealDeadline 返回自判决日起 15 个工作日的上诉期届满日。
 func AppealDeadline(judgmentDate time.Time) time.Time {
 	return AddWorkingDays(judgmentDate, 15)
+}
+
+
+// ValidateAcceptDate 校验受理日期。
+func ValidateAcceptDate(date time.Time) error {
+	if date.IsZero() {
+		return fmt.Errorf("accept date missing: %v", ErrMissingDate)
+	}
+	if date.After(time.Now()) {
+		return fmt.Errorf("future date: %v", ErrFutureDate)
+	}
+	return nil
 }

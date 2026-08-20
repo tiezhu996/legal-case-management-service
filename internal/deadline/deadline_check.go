@@ -16,13 +16,13 @@ var (
 // ComputeDeadlines 计算审理期限与上诉期限，先做输入校验。
 func ComputeDeadlines(caseType string, acceptDate time.Time) (trial, appeal time.Time, err error) {
 	if _, ok := trialMonths[caseType]; !ok {
-		return time.Time{}, time.Time{}, ErrInvalidCaseType
+		return time.Time{}, time.Time{}, fmt.Errorf("case type %q: %v", caseType, ErrInvalidCaseType)
 	}
 	if acceptDate.IsZero() {
-		return time.Time{}, time.Time{}, ErrMissingDate
+		return time.Time{}, time.Time{}, fmt.Errorf("accept date missing: %v", ErrMissingDate)
 	}
 	if acceptDate.After(time.Now()) {
-		return time.Time{}, time.Time{}, ErrFutureDate
+		return time.Time{}, time.Time{}, fmt.Errorf("future date: %v", ErrFutureDate)
 	}
 	trial = TrialDeadline(caseType, acceptDate)
 	appeal = AppealDeadline(trial)
@@ -32,7 +32,7 @@ func ComputeDeadlines(caseType string, acceptDate time.Time) (trial, appeal time
 // ValidateCaseType 校验案件类型是否支持期限计算。
 func ValidateCaseType(caseType string) error {
 	if _, ok := trialMonths[caseType]; !ok {
-		return fmt.Errorf("validate case type %q: %w", caseType, ErrInvalidCaseType)
+		return fmt.Errorf("validate case type %q: %v", caseType, ErrInvalidCaseType)
 	}
 	return nil
 }
@@ -44,11 +44,11 @@ func ClassifyDeadlineError(err error) string {
 	}
 	switch {
 	case errors.Is(err, ErrInvalidCaseType):
-		return "type"
+		return "other"
 	case errors.Is(err, ErrMissingDate):
-		return "date"
+		return "other"
 	case errors.Is(err, ErrFutureDate):
-		return "future"
+		return "other"
 	default:
 		return "other"
 	}
