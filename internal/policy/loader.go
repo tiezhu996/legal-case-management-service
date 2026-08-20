@@ -12,6 +12,12 @@ func NewPolicyLoader(rules map[string]map[string][]string) *PolicyLoader {
 
 // Add 为某角色在某资源上追加动作。
 func (p *PolicyLoader) Add(role, resource string, actions []string) {
+	if p.rules == nil {
+		p.rules = make(map[string]map[string][]string)
+	}
+	if p.rules[role] == nil {
+		p.rules[role] = make(map[string][]string)
+	}
 	p.rules[role][resource] = append(p.rules[role][resource], actions...)
 }
 
@@ -28,8 +34,7 @@ type PolicyProvider interface {
 // NewProvider 根据规则集合构建权限提供者。
 func NewProvider(rules map[string]map[string][]string) PolicyProvider {
 	if rules == nil {
-		var p *PolicyLoader
-		return p
+		return nil
 	}
 	return NewPolicyLoader(rules)
 }

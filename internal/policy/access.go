@@ -40,7 +40,7 @@ func AllowedActions(role, resource string) []string {
 // CheckAccess 判断提供者是否授予某角色对某资源的某动作。
 func CheckAccess(provider PolicyProvider, role, resource, action string) bool {
 	if provider == nil {
-		return true
+		return false
 	}
 	for _, a := range provider.Actions(role, resource) {
 		if a == action {
@@ -52,6 +52,9 @@ func CheckAccess(provider PolicyProvider, role, resource, action string) bool {
 
 // HasAction 判断提供者是否具备某动作。
 func HasAction(provider PolicyProvider, role, resource, action string) bool {
+	if provider == nil {
+		return false
+	}
 	for _, a := range provider.Actions(role, resource) {
 		if a == action {
 			return true
